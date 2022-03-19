@@ -43,7 +43,7 @@ public class ChartasController {
             model.addAttribute("chartas", chartaRepo.findAll());
             return "index";
         }
-        if (chartaRepo.findById(id).isEmpty()){
+        if (chartaRepo.findById(id).isEmpty()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             model.addAttribute("chartas", chartaRepo.findAll());
             return "index";
@@ -72,11 +72,11 @@ public class ChartasController {
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable("id") Long id,@RequestBody @RequestParam("file") MultipartFile multipartFile,
+    public String update(@PathVariable("id") Long id, @RequestBody @RequestParam("file") MultipartFile multipartFile,
                          @RequestParam Integer xCoord, @RequestParam Integer yCoord,
                          @RequestParam Integer width, @RequestParam Integer height,
                          Model model, HttpServletResponse response) throws IOException {
-        if (chartaRepo.findById(id).isEmpty()){
+        if (chartaRepo.findById(id).isEmpty()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             model.addAttribute("chartas", chartaRepo.findAll());
             return "index";
