@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Chartas-Shmartas</title>
+</head>
+<body>
+
+<form action="#" th:method="POST" th:action="@{'/chartas'}">
+    <input type="number" name="width" placeholder="width"/>
+    <input type="number" name="height" placeholder="height"/>
+    <button type="submit">Create</button>
+</form>
+
+
+<table>
+    <thead>
+    <tr>
+        <th> id</th>
+        <th> width</th>
+        <th> height</th>
+        <th> remove</th>
+        <th> get/add</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${chartas.empty}">
+        <td colspan="2"> No chartas Available</td>
+    </tr>
+    <tr th:each="charta : ${chartas}">
+        <td><span th:text="${charta.getId}"> id </span></td>
+        <td><span th:text="${charta.getWidth}"> width </span></td>
+        <td><span th:text="${charta.getHeight}"> height </span></td>
+        <td>
+            <form action="#" th:action="@{'/chartas/{id}'(id=${charta.getId})}" th:method="delete">
+<!--                <input type="hidden" name="_method" value="delete">-->
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{'/chartas/{id}'(id=${charta.getId})}" th:method="get">
+                <input type="number" name="xCoord" placeholder="x"/>
+                <input type="number" name="yCoord" placeholder="y"/>
+                <input type="number" name="width" placeholder="width"/>
+                <input type="number" name="height" placeholder="height"/>
+                <button type="submit">Get</button>
+            </form>
+
+            <form action="#" th:action="@{'/chartas/{id}'(id=${charta.getId})}" th:method="post" enctype="multipart/form-data" >
+                <input type="number" name="xCoord" placeholder="x"/>
+                <input type="number" name="yCoord" placeholder="y"/>
+                <input type="number" name="width" placeholder="width"/>
+                <input type="number" name="height" placeholder="height"/>
+                <input type="file" name="file">
+<!--                <input type="submit" value="submit" disabled />-->
+
+<!--                <input type="file" name="fileInput" id="fileInput" />-->
+                <button type="submit">Add</button>
+            </form>
+
+            <div>
+                ________________________________________________________________________
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+
+</body>
+</html>
