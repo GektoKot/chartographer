@@ -5,6 +5,8 @@ target/
 !**/src/test/**/target/
 src/main/resources/chartas/*
 src/main/resources/tempchartas/
+mvnw
+mvnw.cmd
 
 ### STS ###
 .apt_generated
