@@ -1,4 +1,4 @@
-package com.chartographer;
+package com.chartographer.controller;
 
 import com.chartographer.domain.Charta;
 import com.chartographer.repository.ChartaRepo;
@@ -38,17 +38,20 @@ public class ChartasController {
                        @RequestParam Integer xCoord, @RequestParam Integer yCoord,
                        @RequestParam Integer width, @RequestParam Integer height,
                        Model model, HttpServletResponse response) throws IOException {
-        if (width > 5000 || height > 5000 || width <= 0 || height <= 0) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            model.addAttribute("chartas", chartaRepo.findAll());
-            return "index";
-        }
         if (chartaRepo.findById(id).isEmpty()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             model.addAttribute("chartas", chartaRepo.findAll());
             return "index";
         }
         Charta charta = chartaRepo.findById(id).get();
+        if (width > 5000 || height > 5000
+                || width <= 0 || height <= 0
+                || xCoord < 0 || yCoord < 0
+        ) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("chartas", chartaRepo.findAll());
+            return "index";
+        }
 
         BufferedImage chartaImg = ImageIO.read(new File(charta.getFileName()));
         BufferedImage pieceOfCharta = newCharta(width, height);
