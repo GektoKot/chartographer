@@ -34,6 +34,23 @@ public class ChartasController {
         return "index";
     }
 
+
+    /**
+     * Получить восстановленную часть изображения размера {width} x {height} с координатами ({x};{y}),
+     * где {width} и {height} — положительные целые числа, не превосходящие 5 000.
+     * Под координатами подразумевается положение левого верхнего угла фрагмента
+     * относительно левого верхнего угла основного изображения. Восстановленая часть возвращается в Модели.
+     *
+     * @param id
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param model
+     * @param response
+     * @return "charta" тэмплэйт
+     * @throws IOException
+     */
     @GetMapping("/{id}")
     public String read(@PathVariable Long id,
                        @RequestParam Integer x, @RequestParam Integer y,
@@ -75,6 +92,22 @@ public class ChartasController {
         return "charta";
     }
 
+    /**
+     * Сохранить восстановленный фрагмент изображения размера {width} x {height} с координатами ({x};{y}).
+     * Под координатами подразумевается положение левого верхнего угла фрагмента относительно левого
+     * верхнего угла всего изображения.
+     *
+     * @param id
+     * @param multipartFile загружаемый файл
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param model
+     * @param response
+     * @return "index" template
+     * @throws IOException
+     */
     @PostMapping("/{id}")
     public String update(@PathVariable("id") Long id, @RequestParam("file") MultipartFile multipartFile,
                          @RequestParam Integer x, @RequestParam Integer y,
@@ -123,6 +156,17 @@ public class ChartasController {
 
     }
 
+    /**
+     * Создать новое изображение харты заданного размера, где {width} и {height} —
+     * положительные целые числа, не превосходящие 20 000 и 50 000, соответственно.
+     *
+     * @param width
+     * @param height
+     * @param model
+     * @param response
+     * @return "index" template
+     * @throws IOException
+     */
     @PostMapping
     public String create(@RequestParam Integer width, @RequestParam Integer height,
                          Model model, HttpServletResponse response) throws IOException {
@@ -147,6 +191,13 @@ public class ChartasController {
         return "index";
     }
 
+    /**
+     * Удаляет изображение с идентификатором {id}.
+     *
+     * @param id
+     * @param model
+     * @return "index" template
+     */
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id, Model model) {
         chartaRepo.findById(id).ifPresent(charta -> {
@@ -162,6 +213,13 @@ public class ChartasController {
         return "index";
     }
 
+    /**
+     * Вспомогательный метод, рисует новую харту.
+     *
+     * @param width
+     * @param height
+     * @return BufferedImage
+     */
     // создание новой харты
     private BufferedImage newCharta(int width, int height) {
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
