@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/chartas")
@@ -35,19 +36,19 @@ public class ChartasController {
 
     @GetMapping("/{id}")
     public String read(@PathVariable Long id,
-                       @RequestParam Integer xCoord, @RequestParam Integer yCoord,
+                       @RequestParam Integer x, @RequestParam Integer y,
                        @RequestParam Integer width, @RequestParam Integer height,
                        Model model, HttpServletResponse response) throws IOException {
-        if (chartaRepo.findById(id).isEmpty()) {
+        Optional<Charta> chartaOptional = chartaRepo.findById(id);
+        if (chartaOptional.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             model.addAttribute("chartas", chartaRepo.findAll());
             return "index";
         }
-        Charta charta = chartaRepo.findById(id).get();
+        Charta charta = chartaOptional.get();
         if (width > 5000 || height > 5000
                 || width <= 0 || height <= 0
-                || xCoord < 0 || yCoord < 0
-        ) {
+                || x < 0 || y < 0) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("chartas", chartaRepo.findAll());
             return "index";
@@ -56,15 +57,15 @@ public class ChartasController {
         BufferedImage chartaImg = ImageIO.read(new File(charta.getFileName()));
         BufferedImage pieceOfCharta = newCharta(width, height);
 
-        if (xCoord + width > chartaImg.getWidth()) {
-            width = chartaImg.getWidth() - xCoord;
+        if (x + width > chartaImg.getWidth()) {
+            width = chartaImg.getWidth() - x;
         }
-        if (yCoord + height > chartaImg.getHeight()) {
-            height = chartaImg.getHeight() - yCoord;
+        if (y + height > chartaImg.getHeight()) {
+            height = chartaImg.getHeight() - y;
         }
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                pieceOfCharta.setRGB(x, y, chartaImg.getRGB(x + xCoord, y + yCoord));
+        for (int xLoop = 0; xLoop < width; xLoop++) {
+            for (int yLoop = 0; yLoop < height; yLoop++) {
+                pieceOfCharta.setRGB(xLoop, yLoop, chartaImg.getRGB(xLoop + x, yLoop + y));
             }
         }
 
@@ -75,47 +76,51 @@ public class ChartasController {
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable("id") Long id, @RequestBody @RequestParam("file") MultipartFile multipartFile,
-                         @RequestParam Integer xCoord, @RequestParam Integer yCoord,
+    public String update(@PathVariable("id") Long id, @RequestParam("file") MultipartFile multipartFile,
+                         @RequestParam Integer x, @RequestParam Integer y,
                          @RequestParam Integer width, @RequestParam Integer height,
                          Model model, HttpServletResponse response) throws IOException {
-        if (chartaRepo.findById(id).isEmpty()) {
+        Optional<Charta> chartaOptional = chartaRepo.findById(id);
+        if (chartaOptional.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             model.addAttribute("chartas", chartaRepo.findAll());
             return "index";
         }
-        Charta charta = chartaRepo.findById(id).get();
-        if (xCoord > charta.getWidth() || yCoord > charta.getHeight()
-                || xCoord < 0 || yCoord < 0
+        Charta charta = chartaOptional.get();
+        if (x > charta.getWidth() || y > charta.getHeight()
+                || x < 0 || y < 0
                 || width <= 0 || height <= 0
         ) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("chartas", chartaRepo.findAll());
             return "index";
         }
-        String path = "src/main/resources/chartas/" +
-                charta.getId() + "_" + charta.getWidth() + "_" + charta.getHeight() + ".bmp";
+        File chartaFile = new File(charta.getFileName());
 
 
         ByteArrayInputStream bais = new ByteArrayInputStream(multipartFile.getBytes());
-        BufferedImage base = ImageIO.read(new File(path));
+        BufferedImage base = ImageIO.read(chartaFile);
         BufferedImage source = ImageIO.read(bais);
 
-        if (xCoord + width > base.getWidth()) {
-            width = base.getWidth() - xCoord;
+        if (x + width > base.getWidth()) {
+            width = base.getWidth() - x;
         }
-        if (yCoord + height > base.getHeight()) {
-            height = base.getHeight() - yCoord;
+        if (y + height > base.getHeight()) {
+            height = base.getHeight() - y;
         }
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                base.setRGB(xCoord + x, yCoord + y, source.getRGB(x, y));
+        for (int xLoop = 0; xLoop < width; xLoop++) {
+            for (int yLoop = 0; yLoop < height; yLoop++) {
+                base.setRGB(x + xLoop, y + yLoop, source.getRGB(xLoop, yLoop));
             }
         }
 
-        ImageIO.write(base, "bmp", new File(path));
+        ImageIO.write(base, "bmp", chartaFile);
         model.addAttribute("chartas", chartaRepo.findAll());
         return "index";
+    }
+
+    private void fillImage(Integer x, Integer y, Integer width, Integer height, BufferedImage target, BufferedImage source) {
+
     }
 
     @PostMapping

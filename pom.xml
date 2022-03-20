@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.chartographer</groupId>
 	<artifactId>chartographer</artifactId>
-	<version>chartographer-1.0.0</version>
+	<version>1.0.0</version>
 	<name>chartographer</name>
 	<description>Demo project</description>
 	<properties>
@@ -49,6 +49,14 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine -->
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+<!--			<version>5.8.2</version>-->
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -56,6 +64,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+<!--				<version>${project.parent.version}</version>-->
 			</plugin>
 		</plugins>
 	</build>

@@ -39,15 +39,15 @@
         </td>
         <td>
             <form th:action="@{'/chartas/{id}'(id=${charta.getId})}" th:method="get">
-                <input type="number" name="xCoord" placeholder="x"/>
-                <input type="number" name="yCoord" placeholder="y"/>
+                <input type="number" name="x" placeholder="x"/>
+                <input type="number" name="y" placeholder="y"/>
                 <input type="number" name="width" placeholder="width"/>
                 <input type="number" name="height" placeholder="height"/>
                 <button type="submit">Get</button>
             </form>
             <form action="#" th:action="@{'/chartas/{id}'(id=${charta.getId})}" th:method="post" enctype="multipart/form-data" >
-                <input type="number" name="xCoord" placeholder="x"/>
-                <input type="number" name="yCoord" placeholder="y"/>
+                <input type="number" name="x" placeholder="x"/>
+                <input type="number" name="y" placeholder="y"/>
                 <input type="number" name="width" placeholder="width"/>
                 <input type="number" name="height" placeholder="height"/>
                 <input type="file" name="file">
